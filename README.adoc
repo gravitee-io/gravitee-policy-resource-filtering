@@ -1,0 +1,30 @@
+= Resource Filtering Policy
+
+ifdef::env-github[]
+image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-resource-filtering/master["Build status", link="https://ci.gravitee.io/job/gravitee-io/job/gravitee-policy-resource-filtering/"]
+image:https://badges.gitter.im/Join Chat.svg["Gitter", link="https://gitter.im/gravitee-io/gravitee-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+endif::[]
+
+== Phase
+
+[cols="^2,^2,^2",options="header"]
+|===
+|onRequest|onResponse|onRequestContent|onResponseContent
+
+|X
+|
+|
+|
+|===
+
+== Description
+
+== Usage
+
+== Configuration
+[source, json]
+.Configuration example
+"resource-filtering": {
+}
+
+

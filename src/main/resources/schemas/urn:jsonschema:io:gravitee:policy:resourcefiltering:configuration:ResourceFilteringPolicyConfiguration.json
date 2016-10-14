@@ -1,0 +1,54 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:ResourceFilteringPolicyConfiguration",
+  "properties" : {
+    "whitelist" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:Resource",
+        "properties" : {
+          "pattern" : {
+            "type" : "string",
+            "title": "Path pattern",
+            "description": "Ant-style path patterns"
+          },
+          "methods" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE" ]
+            }
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    "blacklist" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:Resource",
+        "properties" : {
+          "pattern" : {
+            "type" : "string",
+            "title": "Path pattern",
+            "description": "Ant-style path patterns"
+          },
+          "methods" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE" ]
+            }
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    }
+  }
+}
