@@ -22,7 +22,7 @@ import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.PolicyResult;
 import io.gravitee.policy.resourcefiltering.configuration.Resource;
 import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolicyConfiguration;
-import io.gravitee.reporter.api.http.RequestMetrics;
+import io.gravitee.reporter.api.http.Metrics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +63,7 @@ public class ResourceFilteringPolicyTest {
         initMocks(this);
 
         resourceFilteringPolicy = new ResourceFilteringPolicy(resourceFilteringPolicyConfiguration);
-        when(request.metrics()).thenReturn(RequestMetrics.on(System.currentTimeMillis()).build());
+        when(request.metrics()).thenReturn(Metrics.on(System.currentTimeMillis()).build());
     }
 
     @Test
