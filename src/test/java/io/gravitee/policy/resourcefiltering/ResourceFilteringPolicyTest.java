@@ -22,12 +22,11 @@ import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.PolicyResult;
 import io.gravitee.policy.resourcefiltering.configuration.Resource;
 import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolicyConfiguration;
-import io.gravitee.reporter.api.http.Metrics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +34,6 @@ import java.util.Collections;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -60,10 +58,7 @@ public class ResourceFilteringPolicyTest {
 
     @Before
     public void init() {
-        initMocks(this);
-
         resourceFilteringPolicy = new ResourceFilteringPolicy(resourceFilteringPolicyConfiguration);
-        when(request.metrics()).thenReturn(Metrics.on(System.currentTimeMillis()).build());
     }
 
     @Test
