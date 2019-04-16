@@ -15,7 +15,9 @@
  */
 package io.gravitee.policy.resourcefiltering;
 
+import io.gravitee.common.http.HttpMethod;
 import io.gravitee.common.http.HttpStatusCode;
+import io.gravitee.common.util.Maps;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
 import io.gravitee.policy.api.PolicyChain;
@@ -36,6 +38,8 @@ public class ResourceFilteringPolicy {
      */
     private ResourceFilteringPolicyConfiguration configuration;
 
+    private static final String RESOURCE_FILTERING_FORBIDDEN = "RESOURCE_FILTERING_FORBIDDEN";
+
     /**
      * Create a new Resource Filtering Policy instance based on its associated configuration
      *
@@ -48,7 +52,8 @@ public class ResourceFilteringPolicy {
     @OnRequest
     public void onRequest(Request request, Response response, PolicyChain policyChain) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        String path = request.path();
+        final String path = request.path();
+        final HttpMethod method = request.method();
 
         if ((configuration.getWhitelist() == null || configuration.getWhitelist().isEmpty()) &&
                         (configuration.getBlacklist() == null || configuration.getBlacklist().isEmpty())) {
@@ -59,33 +64,40 @@ public class ResourceFilteringPolicy {
         if (configuration.getWhitelist() != null && !configuration.getWhitelist().isEmpty()) {
             for(Resource resource : configuration.getWhitelist()) {
                 if (resource.getPattern() != null && pathMatcher.match(resource.getPattern(), path)) {
-                    if (resource.getMethods() == null || resource.getMethods().contains(request.method())) {
+                    if (resource.getMethods() == null || resource.getMethods().contains(method)) {
                         policyChain.doNext(request, response);
                         return;
                     }
                 }
             }
 
-            policyChain.failWith(PolicyResult.failure(
-                    HttpStatusCode.FORBIDDEN_403,
-                    "You're not allowed to access this resource"));
+            failWithForbidden(policyChain, path, method);
             return;
         }
 
         if (configuration.getBlacklist() != null && ! configuration.getBlacklist().isEmpty()) {
             for(Resource resource : configuration.getBlacklist()) {
                 if (resource.getPattern() != null && pathMatcher.match(resource.getPattern(), path)) {
-                    if (resource.getMethods() == null || resource.getMethods().contains(request.method())) {
-                        policyChain.failWith(PolicyResult.failure(
-                                HttpStatusCode.FORBIDDEN_403,
-                                "You're not allowed to access this resource"));
+                    if (resource.getMethods() == null || resource.getMethods().contains(method)) {
+                        failWithForbidden(policyChain, path, method);
                         return;
                     }
                 }
             }
 
             policyChain.doNext(request, response);
-            return;
         }
+    }
+
+    private void failWithForbidden(PolicyChain policyChain, String path, HttpMethod method) {
+        policyChain.failWith(
+                PolicyResult.failure(
+                        RESOURCE_FILTERING_FORBIDDEN,
+                        HttpStatusCode.FORBIDDEN_403,
+                        "You're not allowed to access this resource",
+                        Maps.<String, Object>builder()
+                                .put("path", path)
+                                .put("method", method)
+                                .build()));
     }
 }

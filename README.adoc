@@ -87,12 +87,30 @@ The mapping matches URLs using the following rules:
 * `*` matches zero or more characters
 * `**` matches zero or more directories in a path
 
-== Http Status Code
+== Errors
 
+=== Default Errors
 |===
 |Code |Message
 
 .^| ```403```
 | Access to the resource is forbidden according to resource-filtering rules.
+
+|===
+
+=== Override Errors
+If you're looking to override the default response provided by the policy, you can do it
+thanks to the response templates feature. These templates must be define at the API level (see `Response Templates`
+from the `Proxy` menu).
+
+Here are the error keys send by this policy:
+
+[cols="2*", options="header"]
+|===
+^|Key
+^|Parameters
+
+.^|RESOURCE_FILTERING_FORBIDDEN
+^.^|path - method
 
 |===
