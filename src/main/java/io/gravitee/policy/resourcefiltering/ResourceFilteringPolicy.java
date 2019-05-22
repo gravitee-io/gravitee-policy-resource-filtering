@@ -71,7 +71,7 @@ public class ResourceFilteringPolicy {
                 }
             }
 
-            failWithForbidden(policyChain, path, method);
+            failWithForbidden(policyChain, path, method, request);
             return;
         }
 
@@ -79,7 +79,7 @@ public class ResourceFilteringPolicy {
             for(Resource resource : configuration.getBlacklist()) {
                 if (resource.getPattern() != null && pathMatcher.match(resource.getPattern(), path)) {
                     if (resource.getMethods() == null || resource.getMethods().contains(method)) {
-                        failWithForbidden(policyChain, path, method);
+                        failWithForbidden(policyChain, path, method, request);
                         return;
                     }
                 }
@@ -89,7 +89,8 @@ public class ResourceFilteringPolicy {
         }
     }
 
-    private void failWithForbidden(PolicyChain policyChain, String path, HttpMethod method) {
+    private void failWithForbidden(PolicyChain policyChain, String path, HttpMethod method, Request request) {
+        request.metrics().setErrorKey(RESOURCE_FILTERING_FORBIDDEN);
         policyChain.failWith(
                 PolicyResult.failure(
                         RESOURCE_FILTERING_FORBIDDEN,
