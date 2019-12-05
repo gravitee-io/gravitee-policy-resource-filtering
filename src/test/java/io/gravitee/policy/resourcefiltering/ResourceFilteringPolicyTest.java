@@ -66,6 +66,8 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(null);
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(null);
 
+        when(request.path()).thenReturn("/path");
+
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
         verify(policyChain).doNext(request, response);
@@ -75,6 +77,8 @@ public class ResourceFilteringPolicyTest {
     public void testOnRequest_emptyFiltering() {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(new ArrayList<>());
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(new ArrayList<>());
+
+        when(request.path()).thenReturn("/path");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -89,6 +93,7 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/123456/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -103,6 +108,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/123456/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    public void testOnRequest_singleBlacklistFiltering_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -118,6 +139,7 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/123456/");
         when(request.method()).thenReturn(HttpMethod.POST);
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
@@ -134,6 +156,7 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/123456/");
         when(request.method()).thenReturn(HttpMethod.GET);
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
@@ -150,6 +173,7 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/");
         when(request.method()).thenReturn(HttpMethod.POST);
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
@@ -166,6 +190,7 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/");
         when(request.method()).thenReturn(HttpMethod.GET);
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
@@ -181,6 +206,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/123456/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/*");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/toto");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -195,6 +236,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering2_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/*");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -209,6 +266,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456/store_12/prices");
+        when(request.contextPath()).thenReturn("/products/123456/store_12/prices/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering3_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/**/prices");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/store_12/prices");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -223,6 +296,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/123456/store_12/prices/toto/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering4_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/**/prices");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -237,6 +326,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/123456/store_12/prices/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering5_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/**/prices");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
@@ -251,6 +356,22 @@ public class ResourceFilteringPolicyTest {
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
         when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/123456/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering6_withContextPath() {
+        Resource resource = new Resource();
+        resource.setPattern("/**/prices/*");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/");
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 

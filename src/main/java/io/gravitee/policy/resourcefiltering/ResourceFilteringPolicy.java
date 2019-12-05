@@ -26,6 +26,9 @@ import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.resourcefiltering.configuration.Resource;
 import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolicyConfiguration;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+
+import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -51,53 +54,41 @@ public class ResourceFilteringPolicy {
 
     @OnRequest
     public void onRequest(Request request, Response response, PolicyChain policyChain) {
-        AntPathMatcher pathMatcher = new AntPathMatcher();
-        final String path = request.path();
-        final HttpMethod method = request.method();
+        final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        if ((configuration.getWhitelist() == null || configuration.getWhitelist().isEmpty()) &&
-                        (configuration.getBlacklist() == null || configuration.getBlacklist().isEmpty())) {
-            policyChain.doNext(request, response);
-            return;
+        if (!validate(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())
+                || !validate(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, request.path())) {
+
+            policyChain.failWith(
+                    PolicyResult.failure(
+                            RESOURCE_FILTERING_FORBIDDEN,
+                            HttpStatusCode.FORBIDDEN_403,
+                            "You're not allowed to access this resource",
+                            Maps.<String, Object>builder()
+                                    .put("path", request.path())
+                                    .put("method", request.method())
+                                    .build()));
+            return ;
         }
 
-        if (configuration.getWhitelist() != null && !configuration.getWhitelist().isEmpty()) {
-            for(Resource resource : configuration.getWhitelist()) {
-                if (resource.getPattern() != null && pathMatcher.match(resource.getPattern(), path)) {
-                    if (resource.getMethods() == null || resource.getMethods().contains(method)) {
-                        policyChain.doNext(request, response);
-                        return;
-                    }
-                }
-            }
-
-            failWithForbidden(policyChain, path, method);
-            return;
-        }
-
-        if (configuration.getBlacklist() != null && ! configuration.getBlacklist().isEmpty()) {
-            for(Resource resource : configuration.getBlacklist()) {
-                if (resource.getPattern() != null && pathMatcher.match(resource.getPattern(), path)) {
-                    if (resource.getMethods() == null || resource.getMethods().contains(method)) {
-                        failWithForbidden(policyChain, path, method);
-                        return;
-                    }
-                }
-            }
-
-            policyChain.doNext(request, response);
-        }
+        policyChain.doNext(request, response);
     }
 
-    private void failWithForbidden(PolicyChain policyChain, String path, HttpMethod method) {
-        policyChain.failWith(
-                PolicyResult.failure(
-                        RESOURCE_FILTERING_FORBIDDEN,
-                        HttpStatusCode.FORBIDDEN_403,
-                        "You're not allowed to access this resource",
-                        Maps.<String, Object>builder()
-                                .put("path", path)
-                                .put("method", method)
-                                .build()));
+    private boolean validate(boolean whitelist, String contextPath, List<Resource> resources, HttpMethod method,
+                             PathMatcher pathMatcher, String path) {
+        if (resources == null || resources.isEmpty()) {
+            return true;
+        }
+
+        for (Resource resource : resources) {
+            if (((resource.getMethods() == null || resource.getMethods().contains(method)) &&
+                    (resource.getPattern() == null ||
+                            pathMatcher.match(resource.getPattern(), path) ||
+                            pathMatcher.match(contextPath + resource.getPattern(), path))) != whitelist ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
