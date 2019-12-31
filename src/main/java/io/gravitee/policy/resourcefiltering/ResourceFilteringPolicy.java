@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class ResourceFilteringPolicy {
@@ -56,8 +57,8 @@ public class ResourceFilteringPolicy {
     public void onRequest(Request request, Response response, PolicyChain policyChain) {
         final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        if (!validate(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())
-                || !validate(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, request.path())) {
+        if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())
+                || match(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, request.path())) {
 
             policyChain.failWith(
                     PolicyResult.failure(
@@ -74,21 +75,21 @@ public class ResourceFilteringPolicy {
         policyChain.doNext(request, response);
     }
 
-    private boolean validate(boolean whitelist, String contextPath, List<Resource> resources, HttpMethod method,
+    private boolean match(boolean whitelist, String contextPath, List<Resource> resources, HttpMethod method,
                              PathMatcher pathMatcher, String path) {
         if (resources == null || resources.isEmpty()) {
-            return true;
+            return whitelist;
         }
 
         for (Resource resource : resources) {
-            if (((resource.getMethods() == null || resource.getMethods().contains(method)) &&
+            if ((resource.getMethods() == null || resource.getMethods().contains(method)) &&
                     (resource.getPattern() == null ||
                             pathMatcher.match(resource.getPattern(), path) ||
-                            pathMatcher.match(contextPath + resource.getPattern(), path))) != whitelist ) {
-                return false;
+                            pathMatcher.match(contextPath + resource.getPattern(), path))) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

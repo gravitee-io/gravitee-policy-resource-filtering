@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -370,6 +372,40 @@ public class ResourceFilteringPolicyTest {
 
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
                 Collections.singletonList(resource));
+        when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering7_withContextPath_multipleResources_ok_ko() {
+        Resource resource1 = new Resource();
+        resource1.setPattern("/**/prices/*");
+        Resource resource2 = new Resource();
+        resource2.setPattern("/**/media/*");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Arrays.asList(resource1, resource2));
+        when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
+        when(request.contextPath()).thenReturn("/products/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    public void testOnRequest_antPatternFiltering8_withContextPath_multipleResources_ko_ok() {
+        Resource resource1 = new Resource();
+        resource1.setPattern("/**/prices/*");
+        Resource resource2 = new Resource();
+        resource2.setPattern("/**/media/*");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(
+                Arrays.asList(resource2, resource1));
         when(request.path()).thenReturn("/products/123456/store_12/prices/toto");
         when(request.contextPath()).thenReturn("/products/");
 
