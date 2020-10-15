@@ -16,6 +16,7 @@
 package io.gravitee.policy.resourcefiltering;
 
 import io.gravitee.common.http.HttpMethod;
+import io.gravitee.common.http.HttpStatusCode;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
 import io.gravitee.policy.api.PolicyChain;
@@ -25,6 +26,7 @@ import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolic
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -144,9 +148,16 @@ public class ResourceFilteringPolicyTest {
         when(request.contextPath()).thenReturn("/products/123456/");
         when(request.method()).thenReturn(HttpMethod.POST);
 
+        ArgumentCaptor<PolicyResult> poilcyResultCaptor = ArgumentCaptor.forClass(PolicyResult.class);
+
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
-        verify(policyChain).failWith(any(PolicyResult.class));
+        verify(policyChain).failWith(poilcyResultCaptor.capture());
+
+        final PolicyResult value = poilcyResultCaptor.getValue();
+        assertNotNull(value);
+        assertEquals(HttpStatusCode.METHOD_NOT_ALLOWED_405, value.statusCode());
+        assertEquals("RESOURCE_FILTERING_METHOD_NOT_ALLOWED", value.key());
     }
 
     @Test
