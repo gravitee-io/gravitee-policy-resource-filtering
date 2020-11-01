@@ -96,6 +96,9 @@ The mapping matches URLs using the following rules:
 .^| ```403```
 | Access to the resource is forbidden according to resource-filtering rules.
 
+.^| ```405```
+| Method not allowed while accessing this resource.
+
 |===
 
 === Override Errors
@@ -113,4 +116,6 @@ Here are the error keys send by this policy:
 .^|RESOURCE_FILTERING_FORBIDDEN
 ^.^|path - method
 
+.^|RESOURCE_FILTERING_METHOD_NOT_ALLOWED
+^.^|path - method
 |===
