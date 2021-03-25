@@ -28,6 +28,10 @@ A typical usage would be to allow access to all paths (`/**`) but in read-only m
 
 WARNING: You can't apply whitelisting and blacklisting to the same resource. Whitelisting takes precedence over blacklisting.
 
+=== Policy identifier
+
+You can enable or disable the policy with policy identifier `resource-filtering`.
+
 == Configuration
 
 |===
