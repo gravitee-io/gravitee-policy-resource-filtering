@@ -16,12 +16,11 @@
 package io.gravitee.policy.resourcefiltering.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -31,8 +30,10 @@ public class ResourceFilteringPolicyConfigurationTest {
 
     @Test
     public void test_resourceFiltering01() throws IOException {
-        ResourceFilteringPolicyConfiguration configuration =
-                load("/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering01.json", ResourceFilteringPolicyConfiguration.class);
+        ResourceFilteringPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering01.json",
+            ResourceFilteringPolicyConfiguration.class
+        );
 
         Assert.assertNotNull(configuration);
         Assert.assertNull(configuration.getBlacklist());
@@ -41,8 +42,10 @@ public class ResourceFilteringPolicyConfigurationTest {
 
     @Test
     public void test_resourceFiltering02() throws IOException {
-        ResourceFilteringPolicyConfiguration configuration =
-                load("/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering02.json", ResourceFilteringPolicyConfiguration.class);
+        ResourceFilteringPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering02.json",
+            ResourceFilteringPolicyConfiguration.class
+        );
 
         Assert.assertNotNull(configuration);
         Assert.assertNotNull(configuration.getBlacklist());
@@ -51,8 +54,10 @@ public class ResourceFilteringPolicyConfigurationTest {
 
     @Test
     public void test_resourceFiltering03() throws IOException {
-        ResourceFilteringPolicyConfiguration configuration =
-                load("/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering03.json", ResourceFilteringPolicyConfiguration.class);
+        ResourceFilteringPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering03.json",
+            ResourceFilteringPolicyConfiguration.class
+        );
 
         List<Resource> whitelist = configuration.getWhitelist();
         Assert.assertNotNull(whitelist);

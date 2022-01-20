@@ -17,7 +17,6 @@ package io.gravitee.policy.resourcefiltering.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.gravitee.common.http.HttpMethod;
-
 import java.util.List;
 
 /**
