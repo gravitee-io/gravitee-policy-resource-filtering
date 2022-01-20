@@ -18,7 +18,6 @@ package io.gravitee.policy.resourcefiltering.configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.gravitee.policy.api.PolicyConfiguration;
-
 import java.util.List;
 
 /**

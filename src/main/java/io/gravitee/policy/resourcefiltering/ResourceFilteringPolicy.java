@@ -25,10 +25,9 @@ import io.gravitee.policy.api.PolicyResult;
 import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.resourcefiltering.configuration.Resource;
 import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolicyConfiguration;
+import java.util.List;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-
-import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -58,7 +57,7 @@ public class ResourceFilteringPolicy {
     public void onRequest(Request request, Response response, PolicyChain policyChain) {
         final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())){
+        if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())) {
             if (methodMismatch(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())) {
                 failedOnMethod(request, policyChain);
             } else {
@@ -72,7 +71,7 @@ public class ResourceFilteringPolicy {
                 failedOnPath(request, policyChain);
             }
 
-            return ;
+            return;
         }
 
         policyChain.doNext(request, response);
@@ -80,39 +79,47 @@ public class ResourceFilteringPolicy {
 
     private void failedOnMethod(Request request, PolicyChain policyChain) {
         policyChain.failWith(
-                PolicyResult.failure(
-                        RESOURCE_FILTERING_METHOD_NOT_ALLOWED,
-                        HttpStatusCode.METHOD_NOT_ALLOWED_405,
-                        "Method not allowed while accessing this resource",
-                        Maps.<String, Object>builder()
-                                .put("path", request.path())
-                                .put("method", request.method())
-                                .build()));
+            PolicyResult.failure(
+                RESOURCE_FILTERING_METHOD_NOT_ALLOWED,
+                HttpStatusCode.METHOD_NOT_ALLOWED_405,
+                "Method not allowed while accessing this resource",
+                Maps.<String, Object>builder().put("path", request.path()).put("method", request.method()).build()
+            )
+        );
     }
 
     private void failedOnPath(Request request, PolicyChain policyChain) {
         policyChain.failWith(
-                PolicyResult.failure(
-                        RESOURCE_FILTERING_FORBIDDEN,
-                        HttpStatusCode.FORBIDDEN_403,
-                        "You're not allowed to access this resource",
-                        Maps.<String, Object>builder()
-                                .put("path", request.path())
-                                .put("method", request.method())
-                                .build()));
+            PolicyResult.failure(
+                RESOURCE_FILTERING_FORBIDDEN,
+                HttpStatusCode.FORBIDDEN_403,
+                "You're not allowed to access this resource",
+                Maps.<String, Object>builder().put("path", request.path()).put("method", request.method()).build()
+            )
+        );
     }
 
-    private boolean match(boolean whitelist, String contextPath, List<Resource> resources, HttpMethod method,
-                             PathMatcher pathMatcher, String path) {
+    private boolean match(
+        boolean whitelist,
+        String contextPath,
+        List<Resource> resources,
+        HttpMethod method,
+        PathMatcher pathMatcher,
+        String path
+    ) {
         if (resources == null || resources.isEmpty()) {
             return whitelist;
         }
 
         for (Resource resource : resources) {
-            if ((resource.getMethods() == null || resource.getMethods().isEmpty() || resource.getMethods().contains(method)) &&
-                    (resource.getPattern() == null ||
-                            pathMatcher.match(resource.getPattern(), path) ||
-                            pathMatcher.match(contextPath + resource.getPattern(), path))) {
+            if (
+                (resource.getMethods() == null || resource.getMethods().isEmpty() || resource.getMethods().contains(method)) &&
+                (
+                    resource.getPattern() == null ||
+                    pathMatcher.match(resource.getPattern(), path) ||
+                    pathMatcher.match(contextPath + resource.getPattern(), path)
+                )
+            ) {
                 return true;
             }
         }
@@ -120,12 +127,22 @@ public class ResourceFilteringPolicy {
         return false;
     }
 
-    private boolean methodMismatch(boolean whitelist, String contextPath, List<Resource> resources, HttpMethod method, PathMatcher pathMatcher, String path) {
+    private boolean methodMismatch(
+        boolean whitelist,
+        String contextPath,
+        List<Resource> resources,
+        HttpMethod method,
+        PathMatcher pathMatcher,
+        String path
+    ) {
         if (!(resources == null || resources.isEmpty())) {
             for (Resource resource : resources) {
-                boolean pathMatch = (resource.getPattern() == null ||
+                boolean pathMatch =
+                    (
+                        resource.getPattern() == null ||
                         pathMatcher.match(resource.getPattern(), path) ||
-                        pathMatcher.match(contextPath + resource.getPattern(), path));
+                        pathMatcher.match(contextPath + resource.getPattern(), path)
+                    );
 
                 if (whitelist && pathMatch && (resource.getMethods() != null && !resource.getMethods().contains(method))) {
                     return true;
