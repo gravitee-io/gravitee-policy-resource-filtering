@@ -1,62 +1,58 @@
 {
-  "type": "object",
-  "id": "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:ResourceFilteringPolicyConfiguration",
-  "properties": {
-    "whitelist": {
-      "title": "Whitelist",
-      "type": "array",
-      "items": {
-        "title": "Rule",
-        "type": "object",
-        "id": "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:Resource",
-        "properties": {
-          "pattern": {
-            "type": "string",
-            "title": "Path pattern",
-            "description": "Ant-style path patterns"
-          },
-          "methods": {
-            "title": "Methods",
-            "description": "HTTP Methods",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "whitelist": {
+            "title": "Whitelist",
             "type": "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE" ]
+            "items": {
+                "title": "Rule",
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "title": "Path pattern",
+                        "description": "Ant-style path patterns"
+                    },
+                    "methods": {
+                        "title": "Methods",
+                        "description": "HTTP Methods",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": ["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": ["pattern"]
             }
-          }
         },
-        "required": [
-          "pattern"
-        ]
-      }
-    },
-    "blacklist": {
-      "title": "Blacklist",
-      "type": "array",
-      "items": {
-        "title": "Rule",
-        "type": "object",
-        "id": "urn:jsonschema:io:gravitee:policy:resourcefiltering:configuration:Resource",
-        "properties": {
-          "pattern": {
-            "type": "string",
-            "title": "Path pattern",
-            "description": "Ant-style path patterns"
-          },
-          "methods": {
-            "title": "Methods",
-            "description": "HTTP Methods",
+        "blacklist": {
+            "title": "Blacklist",
             "type": "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE" ]
+            "items": {
+                "title": "Rule",
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "title": "Path pattern",
+                        "description": "Ant-style path patterns"
+                    },
+                    "methods": {
+                        "title": "Methods",
+                        "description": "HTTP Methods",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": ["CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"]
+                        },
+                        "uniqueItems": true
+                    }
+                },
+                "required": ["pattern"]
             }
-          }
-        },
-        "required": [
-          "pattern"
-        ]
-      }
+        }
     }
-  }
 }
