@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.9.0...1.9.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* update policy description ([f735155](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/f7351556b5e7ab95e12bca7ba7d49720c10d79e2))
+
 # [1.9.0](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.8.1...1.9.0) (2023-07-05)
 
 
