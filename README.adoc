@@ -30,6 +30,13 @@ A typical usage would be to allow access to all paths (`/**`) but in read-only m
 
 WARNING: You can't apply whitelisting and blacklisting to the same resource. Whitelisting takes precedence over blacklisting.
 
+== Compatibility with APIM
+
+|===
+| Plugin version | APIM version
+| 1.x            | All supported versions
+|===
+
 == Configuration
 
 |===
