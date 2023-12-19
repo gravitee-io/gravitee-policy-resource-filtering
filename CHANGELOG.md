@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.9.1...1.10.0) (2023-12-19)
+
+
+### Features
+
+* enable policy on REQUEST phase for message APIs ([90b0cca](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/90b0cca2e345a7c0413699e8d03ed12b1cf89e3b)), closes [gravitee-io/issues#9430](https://github.com/gravitee-io/issues/issues/9430)
+
 ## [1.9.1](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.9.0...1.9.1) (2023-07-20)
 
 
