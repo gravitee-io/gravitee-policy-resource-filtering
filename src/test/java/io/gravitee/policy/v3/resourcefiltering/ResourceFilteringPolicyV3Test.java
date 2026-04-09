@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.policy.resourcefiltering;
+package io.gravitee.policy.v3.resourcefiltering;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,9 +45,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author GraviteeSource Team
  */
 @ExtendWith(MockitoExtension.class)
-class ResourceFilteringPolicyTest {
+class ResourceFilteringPolicyV3Test {
 
-    private ResourceFilteringPolicy resourceFilteringPolicy;
+    private ResourceFilteringPolicyV3 resourceFilteringPolicy;
 
     @Mock
     private ResourceFilteringPolicyConfiguration resourceFilteringPolicyConfiguration;
@@ -63,7 +63,7 @@ class ResourceFilteringPolicyTest {
 
     @BeforeEach
     void init() {
-        resourceFilteringPolicy = new ResourceFilteringPolicy(resourceFilteringPolicyConfiguration);
+        resourceFilteringPolicy = new ResourceFilteringPolicyV3(resourceFilteringPolicyConfiguration);
     }
 
     @Test
