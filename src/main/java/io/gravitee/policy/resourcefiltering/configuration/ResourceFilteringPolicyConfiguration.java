@@ -33,6 +33,9 @@ public class ResourceFilteringPolicyConfiguration implements PolicyConfiguration
     @JsonProperty("blacklist")
     private List<Resource> blacklist;
 
+    @JsonProperty("normalizeRequestPath")
+    private Boolean normalizeRequestPath;
+
     public List<Resource> getWhitelist() {
         return whitelist;
     }
@@ -47,5 +50,13 @@ public class ResourceFilteringPolicyConfiguration implements PolicyConfiguration
 
     public void setBlacklist(List<Resource> blacklist) {
         this.blacklist = blacklist;
+    }
+
+    public boolean isNormalizeRequestPath() {
+        return normalizeRequestPath != null && normalizeRequestPath;
+    }
+
+    public void setNormalizeRequestPath(Boolean normalizeRequestPath) {
+        this.normalizeRequestPath = normalizeRequestPath;
     }
 }

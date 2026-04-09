@@ -249,4 +249,92 @@ class ResourceFilteringPolicyV4Test {
 
         policy.onRequest(ctx).test().assertComplete();
     }
+
+    // --- Path normalization tests ---
+
+    @Test
+    void should_block_blacklisted_path_with_url_encoding() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(configuration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admi%6e/test");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertError(InterruptedException.class);
+
+        verify(ctx).interruptWith(argThat(failure -> failure.statusCode() == HttpStatusCode.FORBIDDEN_403));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_double_slash() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(configuration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin//test");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertError(InterruptedException.class);
+
+        verify(ctx).interruptWith(argThat(failure -> failure.statusCode() == HttpStatusCode.FORBIDDEN_403));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_dot_segment() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(configuration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin/./test");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertError(InterruptedException.class);
+
+        verify(ctx).interruptWith(argThat(failure -> failure.statusCode() == HttpStatusCode.FORBIDDEN_403));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_parent_traversal() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(configuration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin/../admin/test");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertError(InterruptedException.class);
+
+        verify(ctx).interruptWith(argThat(failure -> failure.statusCode() == HttpStatusCode.FORBIDDEN_403));
+    }
+
+    @Test
+    void should_allow_encoded_whitelist_path_when_normalized() {
+        Resource resource = new Resource();
+        resource.setPattern("/public/**");
+
+        when(configuration.getWhitelist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/publi%63/data");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertComplete();
+    }
+
+    @Test
+    void should_not_normalize_when_disabled() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(configuration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(configuration.isNormalizeRequestPath()).thenReturn(false);
+        when(request.path()).thenReturn("/admi%6e/test");
+        when(request.contextPath()).thenReturn("/");
+
+        policy.onRequest(ctx).test().assertComplete();
+    }
 }

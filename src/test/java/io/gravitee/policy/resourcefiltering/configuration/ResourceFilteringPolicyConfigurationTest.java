@@ -69,6 +69,29 @@ class ResourceFilteringPolicyConfigurationTest {
         assertNull(resource.getMethods());
     }
 
+    @Test
+    void normalizeRequestPath_should_default_to_false_when_absent() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+
+        assertFalse(configuration.isNormalizeRequestPath());
+    }
+
+    @Test
+    void normalizeRequestPath_should_return_true_when_explicitly_enabled() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+        configuration.setNormalizeRequestPath(true);
+
+        assertTrue(configuration.isNormalizeRequestPath());
+    }
+
+    @Test
+    void normalizeRequestPath_should_return_false_when_explicitly_disabled() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+        configuration.setNormalizeRequestPath(false);
+
+        assertFalse(configuration.isNormalizeRequestPath());
+    }
+
     private <T> T load(String resource, Class<T> type) throws IOException {
         URL jsonFile = this.getClass().getResource(resource);
         return new ObjectMapper().readValue(jsonFile, type);

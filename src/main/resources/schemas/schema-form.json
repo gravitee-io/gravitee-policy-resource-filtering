@@ -29,6 +29,12 @@
                 "required": ["pattern"]
             }
         },
+        "normalizeRequestPath": {
+            "title": "Normalize request path",
+            "description": "When enabled, the request path is normalized before evaluation (URL-decode, resolve dot segments, collapse double slashes). This prevents bypass via encoded paths.",
+            "type": "boolean",
+            "default": false
+        },
         "blacklist": {
             "title": "Blacklist",
             "type": "array",
