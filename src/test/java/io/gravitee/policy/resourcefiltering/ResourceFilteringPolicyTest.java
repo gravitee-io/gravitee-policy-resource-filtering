@@ -15,8 +15,8 @@
  */
 package io.gravitee.policy.resourcefiltering;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,20 +32,20 @@ import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolic
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ResourceFilteringPolicyTest {
+@ExtendWith(MockitoExtension.class)
+class ResourceFilteringPolicyTest {
 
     private ResourceFilteringPolicy resourceFilteringPolicy;
 
@@ -61,13 +61,13 @@ public class ResourceFilteringPolicyTest {
     @Mock
     protected PolicyChain policyChain;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         resourceFilteringPolicy = new ResourceFilteringPolicy(resourceFilteringPolicyConfiguration);
     }
 
     @Test
-    public void testOnRequest_noFiltering() {
+    void testOnRequest_noFiltering() {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(null);
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(null);
 
@@ -79,7 +79,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_emptyFiltering() {
+    void testOnRequest_emptyFiltering() {
         when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(new ArrayList<>());
         when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(new ArrayList<>());
 
@@ -91,7 +91,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleWhitelistFiltering() {
+    void testOnRequest_singleWhitelistFiltering() {
         Resource resource = new Resource();
         resource.setPattern("/**");
 
@@ -105,7 +105,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleBlacklistFiltering() {
+    void testOnRequest_singleBlacklistFiltering() {
         Resource resource = new Resource();
         resource.setPattern("/**");
 
@@ -119,7 +119,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleBlacklistFiltering_withContextPath() {
+    void testOnRequest_singleBlacklistFiltering_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/**");
 
@@ -133,7 +133,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleWhitelistWithMethodFiltering() {
+    void testOnRequest_singleWhitelistWithMethodFiltering() {
         Resource resource = new Resource();
         resource.setPattern("/**");
         resource.setMethods(Collections.singletonList(HttpMethod.GET));
@@ -143,20 +143,20 @@ public class ResourceFilteringPolicyTest {
         when(request.contextPath()).thenReturn("/products/123456/");
         when(request.method()).thenReturn(HttpMethod.POST);
 
-        ArgumentCaptor<PolicyResult> poilcyResultCaptor = ArgumentCaptor.forClass(PolicyResult.class);
+        ArgumentCaptor<PolicyResult> policyResultCaptor = ArgumentCaptor.forClass(PolicyResult.class);
 
         resourceFilteringPolicy.onRequest(request, response, policyChain);
 
-        verify(policyChain).failWith(poilcyResultCaptor.capture());
+        verify(policyChain).failWith(policyResultCaptor.capture());
 
-        final PolicyResult value = poilcyResultCaptor.getValue();
+        final PolicyResult value = policyResultCaptor.getValue();
         assertNotNull(value);
         assertEquals(HttpStatusCode.METHOD_NOT_ALLOWED_405, value.statusCode());
         assertEquals("RESOURCE_FILTERING_METHOD_NOT_ALLOWED", value.key());
     }
 
     @Test
-    public void testOnRequest_singleWhitelistWithMethodFiltering2() {
+    void testOnRequest_singleWhitelistWithMethodFiltering2() {
         Resource resource = new Resource();
         resource.setPattern("/**");
         resource.setMethods(Collections.singletonList(HttpMethod.GET));
@@ -172,7 +172,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleBlacklistWithMethodFiltering() {
+    void testOnRequest_singleBlacklistWithMethodFiltering() {
         Resource resource = new Resource();
         resource.setPattern("/**");
         resource.setMethods(Collections.singletonList(HttpMethod.GET));
@@ -188,7 +188,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_singleBlacklistWithMethodFiltering2() {
+    void testOnRequest_singleBlacklistWithMethodFiltering2() {
         Resource resource = new Resource();
         resource.setPattern("/**");
         resource.setMethods(Collections.singletonList(HttpMethod.GET));
@@ -204,7 +204,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering() {
+    void testOnRequest_antPatternFiltering() {
         Resource resource = new Resource();
         resource.setPattern("/*");
 
@@ -218,7 +218,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering_withContextPath() {
+    void testOnRequest_antPatternFiltering_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/*");
 
@@ -232,7 +232,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering2() {
+    void testOnRequest_antPatternFiltering2() {
         Resource resource = new Resource();
         resource.setPattern("/products/*");
 
@@ -246,7 +246,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering2_withContextPath() {
+    void testOnRequest_antPatternFiltering2_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/*");
 
@@ -260,7 +260,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering3() {
+    void testOnRequest_antPatternFiltering3() {
         Resource resource = new Resource();
         resource.setPattern("/products/**/prices");
 
@@ -274,7 +274,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering3_withContextPath() {
+    void testOnRequest_antPatternFiltering3_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/**/prices");
 
@@ -288,7 +288,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering4() {
+    void testOnRequest_antPatternFiltering4() {
         Resource resource = new Resource();
         resource.setPattern("/products/**/prices");
 
@@ -302,7 +302,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering4_withContextPath() {
+    void testOnRequest_antPatternFiltering4_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/**/prices");
 
@@ -316,7 +316,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering5() {
+    void testOnRequest_antPatternFiltering5() {
         Resource resource = new Resource();
         resource.setPattern("/products/**/prices");
 
@@ -330,7 +330,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering5_withContextPath() {
+    void testOnRequest_antPatternFiltering5_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/**/prices");
 
@@ -344,7 +344,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering6() {
+    void testOnRequest_antPatternFiltering6() {
         Resource resource = new Resource();
         resource.setPattern("/products/**/prices/*");
 
@@ -358,7 +358,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering6_withContextPath() {
+    void testOnRequest_antPatternFiltering6_withContextPath() {
         Resource resource = new Resource();
         resource.setPattern("/**/prices/*");
 
@@ -372,7 +372,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering7_withContextPath_multipleResources_ok_ko() {
+    void testOnRequest_antPatternFiltering7_withContextPath_multipleResources_ok_ko() {
         Resource resource1 = new Resource();
         resource1.setPattern("/**/prices/*");
         Resource resource2 = new Resource();
@@ -388,7 +388,7 @@ public class ResourceFilteringPolicyTest {
     }
 
     @Test
-    public void testOnRequest_antPatternFiltering8_withContextPath_multipleResources_ko_ok() {
+    void testOnRequest_antPatternFiltering8_withContextPath_multipleResources_ko_ok() {
         Resource resource1 = new Resource();
         resource1.setPattern("/**/prices/*");
         Resource resource2 = new Resource();
