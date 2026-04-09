@@ -15,57 +15,58 @@
  */
 package io.gravitee.policy.resourcefiltering.configuration;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class ResourceFilteringPolicyConfigurationTest {
+class ResourceFilteringPolicyConfigurationTest {
 
     @Test
-    public void test_resourceFiltering01() throws IOException {
+    void test_resourceFiltering01() throws IOException {
         ResourceFilteringPolicyConfiguration configuration = load(
             "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering01.json",
             ResourceFilteringPolicyConfiguration.class
         );
 
-        Assert.assertNotNull(configuration);
-        Assert.assertNull(configuration.getBlacklist());
-        Assert.assertNotNull(configuration.getWhitelist());
+        assertNotNull(configuration);
+        assertNull(configuration.getBlacklist());
+        assertNotNull(configuration.getWhitelist());
     }
 
     @Test
-    public void test_resourceFiltering02() throws IOException {
+    void test_resourceFiltering02() throws IOException {
         ResourceFilteringPolicyConfiguration configuration = load(
             "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering02.json",
             ResourceFilteringPolicyConfiguration.class
         );
 
-        Assert.assertNotNull(configuration);
-        Assert.assertNotNull(configuration.getBlacklist());
-        Assert.assertNotNull(configuration.getWhitelist());
+        assertNotNull(configuration);
+        assertNotNull(configuration.getBlacklist());
+        assertNotNull(configuration.getWhitelist());
     }
 
     @Test
-    public void test_resourceFiltering03() throws IOException {
+    void test_resourceFiltering03() throws IOException {
         ResourceFilteringPolicyConfiguration configuration = load(
             "/io/gravitee/policy/resourcefiltering/configuration/resourcefiltering03.json",
             ResourceFilteringPolicyConfiguration.class
         );
 
         List<Resource> whitelist = configuration.getWhitelist();
-        Assert.assertNotNull(whitelist);
-        Assert.assertFalse(whitelist.isEmpty());
+        assertNotNull(whitelist);
+        assertFalse(whitelist.isEmpty());
 
         Resource resource = whitelist.iterator().next();
-        Assert.assertNotNull(resource);
-        Assert.assertNull(resource.getMethods());
+        assertNotNull(resource);
+        assertNull(resource.getMethods());
     }
 
     private <T> T load(String resource, Class<T> type) throws IOException {
