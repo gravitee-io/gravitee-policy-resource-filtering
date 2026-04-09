@@ -402,4 +402,96 @@ class ResourceFilteringPolicyV3Test {
 
         verify(policyChain).doNext(request, response);
     }
+
+    // --- Path normalization tests ---
+
+    @Test
+    void should_block_blacklisted_path_with_url_encoding() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admi%6e/test");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_double_slash() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin//test");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_dot_segment() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin/./test");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    void should_block_blacklisted_path_with_parent_traversal() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/admin/../admin/test");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).failWith(any(PolicyResult.class));
+    }
+
+    @Test
+    void should_allow_encoded_whitelist_path_when_normalized() {
+        Resource resource = new Resource();
+        resource.setPattern("/public/**");
+
+        when(resourceFilteringPolicyConfiguration.getWhitelist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(true);
+        when(request.path()).thenReturn("/publi%63/data");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
+
+    @Test
+    void should_not_normalize_when_disabled() {
+        Resource resource = new Resource();
+        resource.setPattern("/admin/**");
+
+        when(resourceFilteringPolicyConfiguration.getBlacklist()).thenReturn(Collections.singletonList(resource));
+        when(resourceFilteringPolicyConfiguration.isNormalizeRequestPath()).thenReturn(false);
+        when(request.path()).thenReturn("/admi%6e/test");
+        when(request.contextPath()).thenReturn("/");
+
+        resourceFilteringPolicy.onRequest(request, response, policyChain);
+
+        verify(policyChain).doNext(request, response);
+    }
 }

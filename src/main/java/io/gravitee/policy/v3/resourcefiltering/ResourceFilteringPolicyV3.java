@@ -23,6 +23,7 @@ import io.gravitee.gateway.api.Response;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.PolicyResult;
 import io.gravitee.policy.api.annotations.OnRequest;
+import io.gravitee.policy.resourcefiltering.PathNormalizer;
 import io.gravitee.policy.resourcefiltering.configuration.Resource;
 import io.gravitee.policy.resourcefiltering.configuration.ResourceFilteringPolicyConfiguration;
 import java.util.List;
@@ -49,15 +50,20 @@ public class ResourceFilteringPolicyV3 {
     public void onRequest(Request request, Response response, PolicyChain policyChain) {
         final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())) {
-            if (methodMismatch(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, request.path())) {
+        String path = request.path();
+        if (configuration.isNormalizeRequestPath()) {
+            path = PathNormalizer.normalize(path);
+        }
+
+        if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, path)) {
+            if (methodMismatch(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, path)) {
                 failedOnMethod(request, policyChain);
             } else {
                 failedOnPath(request, policyChain);
             }
             return;
-        } else if (match(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, request.path())) {
-            if (methodMismatch(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, request.path())) {
+        } else if (match(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, path)) {
+            if (methodMismatch(false, request.contextPath(), configuration.getBlacklist(), request.method(), pathMatcher, path)) {
                 failedOnMethod(request, policyChain);
             } else {
                 failedOnPath(request, policyChain);

@@ -45,7 +45,10 @@ public class ResourceFilteringPolicy extends ResourceFilteringPolicyV3 implement
     public Completable onRequest(HttpPlainExecutionContext ctx) {
         return Completable.defer(() -> {
             final AntPathMatcher pathMatcher = new AntPathMatcher();
-            final String path = ctx.request().path();
+            String path = ctx.request().path();
+            if (configuration.isNormalizeRequestPath()) {
+                path = PathNormalizer.normalize(path);
+            }
             final String contextPath = ctx.request().contextPath();
             final io.gravitee.common.http.HttpMethod method = ctx.request().method();
 
