@@ -52,7 +52,7 @@ public class ResourceFilteringPolicyV3 {
 
         String path = request.path();
         if (configuration.isNormalizeRequestPath()) {
-            path = PathNormalizer.normalize(path);
+            path = PathNormalizer.normalize(path, configuration.isDecodeEncodedSlash());
         }
 
         if (!match(true, request.contextPath(), configuration.getWhitelist(), request.method(), pathMatcher, path)) {

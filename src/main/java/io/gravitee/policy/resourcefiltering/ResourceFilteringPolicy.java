@@ -47,7 +47,7 @@ public class ResourceFilteringPolicy extends ResourceFilteringPolicyV3 implement
             final AntPathMatcher pathMatcher = new AntPathMatcher();
             String path = ctx.request().path();
             if (configuration.isNormalizeRequestPath()) {
-                path = PathNormalizer.normalize(path);
+                path = PathNormalizer.normalize(path, configuration.isDecodeEncodedSlash());
             }
             final String contextPath = ctx.request().contextPath();
             final io.gravitee.common.http.HttpMethod method = ctx.request().method();

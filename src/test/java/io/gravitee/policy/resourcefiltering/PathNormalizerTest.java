@@ -91,4 +91,42 @@ class PathNormalizerTest {
     void should_handle_root_path() {
         assertEquals("/", PathNormalizer.normalize("/"));
     }
+
+    @Test
+    void should_preserve_encoded_slash_by_default() {
+        assertEquals("/api/users/alice%2Fbob", PathNormalizer.normalize("/api/users/alice%2Fbob"));
+    }
+
+    @Test
+    void should_preserve_lowercase_encoded_slash_by_default() {
+        assertEquals("/api/users/alice%2fbob", PathNormalizer.normalize("/api/users/alice%2fbob"));
+    }
+
+    @Test
+    void should_preserve_encoded_slash_and_still_decode_other_encodings() {
+        assertEquals("/admin/alice%2Fbob", PathNormalizer.normalize("/admi%6e/alice%2Fbob"));
+    }
+
+    @Test
+    void should_not_resolve_dot_segments_hidden_behind_encoded_slash_by_default() {
+        // %2F stays literal, so the "/.." is not a real path segment and is not resolved.
+        assertEquals("/api/users/alice%2F..%2Fadmin", PathNormalizer.normalize("/api/users/alice%2F..%2Fadmin"));
+    }
+
+    @Test
+    void should_decode_encoded_slash_when_enabled() {
+        assertEquals("/api/users/alice/bob", PathNormalizer.normalize("/api/users/alice%2Fbob", true));
+    }
+
+    @Test
+    void should_decode_lowercase_encoded_slash_when_enabled() {
+        assertEquals("/api/users/alice/bob", PathNormalizer.normalize("/api/users/alice%2fbob", true));
+    }
+
+    @Test
+    void should_resolve_dot_segments_hidden_behind_encoded_slash_when_enabled() {
+        // %2F becomes /, dot segments are then resolved, revealing the bypass attempt:
+        // /api/users/alice/../admin -> /api/users/admin
+        assertEquals("/api/users/admin", PathNormalizer.normalize("/api/users/alice%2F..%2Fadmin", true));
+    }
 }

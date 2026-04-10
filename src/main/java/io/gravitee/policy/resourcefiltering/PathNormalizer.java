@@ -26,23 +26,48 @@ public final class PathNormalizer {
     private PathNormalizer() {}
 
     /**
+     * Normalize a URL path, preserving encoded slashes ({@code %2F}/{@code %2f}) as literal
+     * characters. Equivalent to {@link #normalize(String, boolean)} with {@code decodeEncodedSlash=false}.
+     */
+    public static String normalize(String path) {
+        return normalize(path, false);
+    }
+
+    /**
      * Normalize a URL path:
      * <ul>
      *   <li>URL-decode percent-encoded characters (%6e → n)</li>
      *   <li>Collapse multiple slashes (// → /)</li>
      *   <li>Remove dot segments (/./ and /../) per RFC 3986 §5.2.4</li>
      * </ul>
+     *
+     * @param path the request path to normalize
+     * @param decodeEncodedSlash when {@code true}, encoded slashes ({@code %2F}/{@code %2f}) are
+     *                           decoded to {@code /} and then collapsed and resolved like any
+     *                           other slash. When {@code false}, they are preserved as literal
+     *                           {@code %2F}/{@code %2f} in the output so that legitimate uses
+     *                           (e.g. identifiers containing a slash) are not altered.
      */
-    public static String normalize(String path) {
+    public static String normalize(String path, boolean decodeEncodedSlash) {
         if (path == null || path.isEmpty()) {
             return path;
         }
 
-        String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8);
+        String toDecode = decodeEncodedSlash ? path : protectEncodedSlashes(path);
+        String decoded = URLDecoder.decode(toDecode, StandardCharsets.UTF_8);
         decoded = decoded.replaceAll("/+", "/");
         decoded = removeDotSegments(decoded);
 
         return decoded;
+    }
+
+    /**
+     * Double-encode {@code %2F}/{@code %2f} to {@code %252F}/{@code %252f} so that a subsequent
+     * {@link URLDecoder#decode} call produces the literal characters {@code %2F}/{@code %2f}
+     * instead of {@code /}.
+     */
+    private static String protectEncodedSlashes(String path) {
+        return path.replace("%2F", "%252F").replace("%2f", "%252f");
     }
 
     /**
