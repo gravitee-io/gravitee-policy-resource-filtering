@@ -36,6 +36,9 @@ public class ResourceFilteringPolicyConfiguration implements PolicyConfiguration
     @JsonProperty("normalizeRequestPath")
     private Boolean normalizeRequestPath;
 
+    @JsonProperty("decodeEncodedSlash")
+    private Boolean decodeEncodedSlash;
+
     public List<Resource> getWhitelist() {
         return whitelist;
     }
@@ -58,5 +61,13 @@ public class ResourceFilteringPolicyConfiguration implements PolicyConfiguration
 
     public void setNormalizeRequestPath(Boolean normalizeRequestPath) {
         this.normalizeRequestPath = normalizeRequestPath;
+    }
+
+    public boolean isDecodeEncodedSlash() {
+        return decodeEncodedSlash != null && decodeEncodedSlash;
+    }
+
+    public void setDecodeEncodedSlash(Boolean decodeEncodedSlash) {
+        this.decodeEncodedSlash = decodeEncodedSlash;
     }
 }

@@ -92,6 +92,29 @@ class ResourceFilteringPolicyConfigurationTest {
         assertFalse(configuration.isNormalizeRequestPath());
     }
 
+    @Test
+    void decodeEncodedSlash_should_default_to_false_when_absent() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+
+        assertFalse(configuration.isDecodeEncodedSlash());
+    }
+
+    @Test
+    void decodeEncodedSlash_should_return_true_when_explicitly_enabled() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+        configuration.setDecodeEncodedSlash(true);
+
+        assertTrue(configuration.isDecodeEncodedSlash());
+    }
+
+    @Test
+    void decodeEncodedSlash_should_return_false_when_explicitly_disabled() {
+        ResourceFilteringPolicyConfiguration configuration = new ResourceFilteringPolicyConfiguration();
+        configuration.setDecodeEncodedSlash(false);
+
+        assertFalse(configuration.isDecodeEncodedSlash());
+    }
+
     private <T> T load(String resource, Class<T> type) throws IOException {
         URL jsonFile = this.getClass().getResource(resource);
         return new ObjectMapper().readValue(jsonFile, type);
