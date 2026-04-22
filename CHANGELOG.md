@@ -1,3 +1,22 @@
+# [2.0.0](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.10.0...2.0.0) (2026-04-22)
+
+
+### chore
+
+* update project ([c0e7988](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/c0e798807410a1f595711ff8493fb3786138e2d1))
+
+
+### Features
+
+* add opt-in decoding of encoded slashes (%2F) during normalization ([3f217b1](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/3f217b1f2f97f70afd6867d3c9e1fc93e285b28d))
+* add request path normalization to prevent bypass via encoding ([881277c](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/881277c83886fa925a9866127a9b583eea7ac93a))
+* add V4 reactive support for Resource Filtering policy ([48e40b5](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/48e40b5bfba8300124ee6c71fbfe0bbc33086cf8))
+
+
+### BREAKING CHANGES
+
+* requires APIM 4.7.0 minimum and JDK 21
+
 # [1.10.0](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.9.1...1.10.0) (2023-12-19)
 
 
