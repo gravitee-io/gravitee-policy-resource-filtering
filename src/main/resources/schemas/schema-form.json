@@ -29,18 +29,6 @@
                 "required": ["pattern"]
             }
         },
-        "normalizeRequestPath": {
-            "title": "Normalize request path",
-            "description": "When enabled, the request path is normalized before evaluation (URL-decode, resolve dot segments, collapse double slashes). This prevents bypass via encoded paths.",
-            "type": "boolean",
-            "default": false
-        },
-        "decodeEncodedSlash": {
-            "title": "Decode encoded slashes (%2F)",
-            "description": "Only applies when path normalization is enabled. When enabled, encoded slashes (%2F/%2f) are decoded to '/' during normalization. When disabled (default), they are preserved as literal %2F/%2f so that legitimate uses (e.g. identifiers containing a slash) are not altered. Enable for stricter security at the cost of rejecting paths that legitimately contain encoded slashes.",
-            "type": "boolean",
-            "default": false
-        },
         "blacklist": {
             "title": "Blacklist",
             "type": "array",
@@ -65,6 +53,25 @@
                     }
                 },
                 "required": ["pattern"]
+            }
+        },
+        "normalizeRequestPath": {
+            "title": "Normalize request path",
+            "description": "When enabled, the request path is normalized before evaluation (URL-decode, resolve dot segments, collapse double slashes). This prevents bypass via encoded paths.",
+            "type": "boolean",
+            "default": false
+        },
+        "decodeEncodedSlash": {
+            "title": "Decode encoded slashes (%2F)",
+            "description": "Only applies when path normalization is enabled. When enabled, encoded slashes (%2F/%2f) are decoded to '/' during normalization. When disabled (default), they are preserved as literal %2F/%2f so that legitimate uses (e.g. identifiers containing a slash) are not altered. Enable for stricter security at the cost of rejecting paths that legitimately contain encoded slashes.",
+            "type": "boolean",
+            "default": false,
+            "gioConfig": {
+                "disableIf": {
+                    "$eq": {
+                        "value.normalizeRequestPath": false
+                    }
+                }
             }
         }
     }
