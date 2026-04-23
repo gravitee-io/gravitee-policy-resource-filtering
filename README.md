@@ -312,6 +312,13 @@ Strikethrough text indicates that a version is deprecated.
 
 ## Changelog
 
+#### [2.0.1](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/2.0.0...2.0.1) (2026-04-23)
+
+
+##### Bug Fixes
+
+* **schema:** reorder booleans and gate decodeEncodedSlash on normalizeRequestPath ([ae53e4f](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/ae53e4ff801a36d96fee6533dbc38aaabad4bd83))
+
 ### [2.0.0](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/1.10.0...2.0.0) (2026-04-22)
 
 
