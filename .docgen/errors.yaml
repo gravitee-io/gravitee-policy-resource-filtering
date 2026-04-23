@@ -1,0 +1,5 @@
+rows:
+    - data:
+          key: RESOURCE_FILTERING_FORBIDDEN
+    - data:
+          key: RESOURCE_FILTERING_METHOD_NOT_ALLOWED

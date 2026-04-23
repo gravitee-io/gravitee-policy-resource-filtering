@@ -1,0 +1,7 @@
+{
+    "blacklist": [
+        {
+            "pattern": "/**/admin/**"
+        }
+    ]
+}

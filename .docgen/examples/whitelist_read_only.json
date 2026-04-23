@@ -1,0 +1,8 @@
+{
+    "whitelist": [
+        {
+            "pattern": "/**",
+            "methods": ["GET"]
+        }
+    ]
+}
