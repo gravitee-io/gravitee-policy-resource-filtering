@@ -1,0 +1,30 @@
+# No auto-generated default example: whitelist/blacklist have no schema-level sample,
+# so docgen cannot produce a meaningful default. The rawExamples below cover the main
+# configurations explicitly.
+genExamples: []
+
+rawExamples:
+    - title: Whitelist — read-only access to every resource
+      templateRef: v4-api-proxy
+      language: json
+      properties:
+          phase: request
+      file: .docgen/examples/whitelist_read_only.json
+    - title: Blacklist — deny every admin path
+      templateRef: v4-api-proxy
+      language: json
+      properties:
+          phase: request
+      file: .docgen/examples/blacklist_admin.json
+    - title: Blacklist with path normalization (prevents %6e, /./, /../ bypass)
+      templateRef: v4-api-proxy
+      language: json
+      properties:
+          phase: request
+      file: .docgen/examples/normalize_request_path.json
+    - title: Blacklist with encoded slash decoding (stricter, rejects %2F)
+      templateRef: v4-api-proxy
+      language: json
+      properties:
+          phase: request
+      file: .docgen/examples/decode_encoded_slash.json

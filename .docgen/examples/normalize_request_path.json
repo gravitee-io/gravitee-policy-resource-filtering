@@ -1,0 +1,9 @@
+{
+    "blacklist": [
+        {
+            "pattern": "/**/admin/**"
+        }
+    ],
+    "normalizeRequestPath": true,
+    "decodeEncodedSlash": false
+}
