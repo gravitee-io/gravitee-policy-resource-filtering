@@ -1,0 +1,73 @@
+{
+    "id": "resource-filtering-normalize-disabled",
+    "name": "resource-filtering-normalize-disabled",
+    "apiVersion": "1.0",
+    "definitionVersion": "4.0.0",
+    "type": "proxy",
+    "analytics": {},
+    "listeners": [
+        {
+            "type": "http",
+            "paths": [
+                {
+                    "path": "/echo"
+                }
+            ],
+            "entrypoints": [
+                {
+                    "type": "http-proxy"
+                }
+            ]
+        }
+    ],
+    "endpointGroups": [
+        {
+            "name": "default-group",
+            "type": "http-proxy",
+            "endpoints": [
+                {
+                    "name": "default",
+                    "type": "http-proxy",
+                    "weight": 1,
+                    "inheritConfiguration": false,
+                    "configuration": {
+                        "target": "http://localhost:8080/endpoint"
+                    }
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": "resource-filtering-flow",
+            "enabled": true,
+            "selectors": [
+                {
+                    "type": "http",
+                    "path": "/",
+                    "pathOperator": "STARTS_WITH"
+                }
+            ],
+            "request": [
+                {
+                    "name": "Resource Filtering",
+                    "description": "",
+                    "enabled": true,
+                    "policy": "resource-filtering",
+                    "configuration": {
+                        "blacklist": [
+                            {
+                                "pattern": "**/admin/test/**"
+                            }
+                        ],
+                        "normalizeRequestPath": false,
+                        "decodeEncodedSlash": false
+                    }
+                }
+            ],
+            "response": [],
+            "subscribe": [],
+            "publish": []
+        }
+    ]
+}
