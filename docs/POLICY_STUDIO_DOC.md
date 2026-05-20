@@ -69,6 +69,12 @@ Controls how encoded slashes (`%2F` / `%2f`) are handled during normalization:
 * `false`: encoded slashes are preserved as literal `%2F` / `%2f`. Useful when identifiers in your URL legitimately contain a slash.
 * `true`: encoded slashes are decoded to `/`, then collapsed and resolved like any other slash. Stricter for security, at the cost of rejecting paths that legitimately contain encoded slashes.
 
+### Scope of decoding
+
+Percent-decoding is applied in a single pass. A multi-encoded sequence such as `%252e%252e` is decoded to `%2e%2e` and is therefore not resolved as a `..` traversal segment. This matches the behavior of most upstream components and keeps legitimate doubly-encoded values intact.
+
+If your deployment needs to reject doubly-encoded paths, handle it at the gateway or ingress layer before the request reaches the policy.
+
 ### Implicit behavior on `//`
 
 Even when `normalizeRequestPath` is `false`, patterns are matched using Spring's `AntPathMatcher`, which tokenizes paths with `ignoreEmptyTokens=true`. As a consequence, `//` is always treated as `/` during pattern matching — independent of the normalization flag. This only affects duplicate slashes, not other encoding tricks.
