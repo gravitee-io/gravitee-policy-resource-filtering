@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/2.0.1...2.0.2) (2026-06-18)
+
+
+### Bug Fixes
+
+* **docs:** add a not about decoding ([70f917a](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/70f917a2bfad92064149427699ce616028eb1e39))
+
 ## [2.0.1](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/2.0.0...2.0.1) (2026-04-23)
 
 
