@@ -117,10 +117,10 @@ The `resource-filtering` policy can be applied to the following API types and fl
 ## Compatibility matrix
 Strikethrough text indicates that a version is deprecated.
 
-| Plugin version| APIM |
-| --- | ---  |
-|2.x|4.7.x and upper |
-|1.x|up to 4.6.x |
+| Plugin version| APIM| Java version |
+| --- | --- | ---  |
+|2.x|4.7.x and upper|21 |
+|1.x|up to 4.6.x|11 |
 
 
 ## Configuration options
