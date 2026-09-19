@@ -53,6 +53,9 @@ class ResourceFilteringPolicyV4Test {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient()
+            .when(ctx.withLogger(org.mockito.ArgumentMatchers.any()))
+            .thenReturn(org.slf4j.LoggerFactory.getLogger(getClass()));
         policy = new ResourceFilteringPolicy(configuration);
         lenient().when(ctx.request()).thenReturn(request);
         lenient().when(ctx.interruptWith(any())).thenReturn(Completable.error(new InterruptedException()));
