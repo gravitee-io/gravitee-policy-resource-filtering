@@ -2,6 +2,8 @@ rows:
     - data:
           plugin: "2.x"
           apim: "4.7.x and upper"
+          java: 21
     - data:
           plugin: "1.x"
           apim: "up to 4.6.x"
+          java: 11
