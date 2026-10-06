@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/2.0.2...2.0.3) (2026-10-06)
+
+
+### Bug Fixes
+
+* **deps:** bump gravitee-apim to 4.12.21 ([c077511](https://github.com/gravitee-io/gravitee-policy-resource-filtering/commit/c07751145ab5d8403fd8908876733a31a1cb3143))
+
 ## [2.0.2](https://github.com/gravitee-io/gravitee-policy-resource-filtering/compare/2.0.1...2.0.2) (2026-06-18)
 
 
